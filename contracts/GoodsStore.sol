@@ -15,6 +15,11 @@ contract GoodsStore is Ownable {
     event GoodsAdded(uint256 goodsId, string name, uint256 price, uint256 stock);
     event GoodsPurchased(uint256 goodsId, address buyer, uint256 quantity, uint256 totalPrice);
 
+    // 생성자: 소유자 설정
+    constructor(address initialOwner) Ownable(initialOwner) {
+        _transferOwnership(initialOwner);
+    }
+
     // 굿즈 등록 함수
     function addGoods(uint256 goodsId, string memory name, uint256 price, uint256 stock) public onlyOwner {
         require(goods[goodsId].price == 0, "Goods already exists");
