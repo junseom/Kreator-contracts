@@ -1,20 +1,21 @@
-// This setup uses Hardhat Ignition to manage smart contract deployments.
-// Learn more about it at https://hardhat.org/ignition
+const { ethers } = require("hardhat");
 
-import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
+async function deploy() {
+    // Deploy Kreator contract
+    const Kreator = await ethers.getContractFactory("Kreator");
+    const kreator = await Kreator.deploy();
+    await kreator.deployed();
+    console.log("Kreator deployed to:", kreator.address);
 
-const JAN_1ST_2030 = 1893456000;
-const ONE_GWEI: bigint = 1_000_000_000n;
+    // Deploy GoodsStore contract
+    const GoodsStore = await ethers.getContractFactory("GoodsStore");
+    const goodsStore = await GoodsStore.deploy();
+    await goodsStore.deployed();
+    console.log("GoodsStore deployed to:", goodsStore.address);
+}
 
-const LockModule = buildModule("LockModule", (m) => {
-  const unlockTime = m.getParameter("unlockTime", JAN_1ST_2030);
-  const lockedAmount = m.getParameter("lockedAmount", ONE_GWEI);
-
-  const lock = m.contract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
-
-  return { lock };
+// Run the deployment script
+deploy().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
 });
-
-export default LockModule;
