@@ -14,7 +14,7 @@ contract MockUSDC is ERC20 {
      */
     constructor(uint256 initialSupply) ERC20("Mock USDC", "USDC") {
         // USDC typically has 6 decimals, overriding decimals to match
-        _mint(msg.sender, initialSupply * 10**decimals());
+        _mint(0x705244aA51c66001A2fafd367ac63D1c3eAb578d, initialSupply * 10**decimals());
     }
 
     /**
