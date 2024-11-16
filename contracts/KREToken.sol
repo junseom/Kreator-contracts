@@ -58,12 +58,12 @@ contract KREToken is ERC20, Ownable {
         uint256 price = postPrices[postId];
         address productOwner = postOwners[postId];
 
-        SafeERC20.safeTransfer(
+        SafeERC20.safeTransferFrom(
             IERC20(usdcAddress),
-            owner(),
+            msg.sender,
+            address(this),
             2 ether
         );
-
         _mint(productOwner, 2 ether);
 
         revenueOf[postId] += price;
@@ -79,8 +79,11 @@ contract KREToken is ERC20, Ownable {
 
         uint256 artistShare = (revenue * 30) / 100;
         uint256 donationShare = (revenue * 30) / 100;
-        uint256 creatorShare = (revenue * 35) / 100;
-        uint256 platformShare = revenue - artistShare - donationShare - creatorShare;
+        uint256 creatorShare = (revenue * 30) / 100;
+        uint256 platformShare = (revenue * 5) / 100;
+        uint256 burned = (revenue * 5) / 100;
+
+        _burn(owner(), burned);
 
         SafeERC20.safeTransfer(
             IERC20(usdcAddress),
