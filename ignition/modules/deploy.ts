@@ -1,22 +1,23 @@
-const { ethers } = require("hardhat");
+import { ethers } from "hardhat";
 
 async function deploy() {
     const signers = await ethers.getSigners();
     const owner = signers[0];
+    const initialSupply = ethers.parseEther("1000000");
 
     // Deploy Kreator contract
-    const Kreator = await ethers.getContractFactory("Kreator");
-    const kreator = await Kreator.deploy(owner.address, "");
-    await kreator.waitForDeployment();
-    const kreatorAddress = await kreator.getAddress();
-    console.log("Kreator deployed to:", kreatorAddress);
+    const KREToekn = await ethers.getContractFactory("KREToken");
+    const kretoken = await KREToekn.deploy(owner.address, initialSupply);
+    await kretoken.waitForDeployment();
+    const kretokenAddress = await kretoken.getAddress();
+    console.log("Kreator deployed to:", kretokenAddress);
 
     // Deploy GoodsStore contract
-    const GoodsStore = await ethers.getContractFactory("GoodsStore");
-    const goodsStore = await GoodsStore.deploy(owner.address);
-    await goodsStore.waitForDeployment();
-    const goodsStoreAddress = await goodsStore.getAddress();
-    console.log("GoodsStore deployed to:", goodsStoreAddress);
+    const MockUSDC = await ethers.getContractFactory("MockUSDC");
+    const mockUSDC = await MockUSDC.deploy(initialSupply);
+    await mockUSDC.waitForDeployment();
+    const mockUSDCAddress = await mockUSDC.getAddress();
+    console.log("GoodsStore deployed to:", mockUSDCAddress);
 }
 
 // Run the deployment script
@@ -24,3 +25,5 @@ deploy().catch((error) => {
     console.error(error);
     process.exitCode = 1;
 });
+
+// npx hardhat run ignition/modules/deploy.ts --network localhost

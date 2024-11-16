@@ -10,6 +10,13 @@ const config: HardhatUserConfig = {
   solidity: "0.8.27",
   defaultNetwork: "sepolia",
   networks: {
+    hardhat: {
+      accounts: [{
+        privateKey: pk,
+        balance: "10000000000000000000000000",
+        },
+      ],
+    },
     sepolia: {
       url: "https://sepolia.infura.io/v3/b7346d6e7f12453f820ba5f60b684014",
       accounts: [pk]
@@ -18,3 +25,5 @@ const config: HardhatUserConfig = {
 };
 
 export default config;
+
+// npx hardhat run ignition/modules/deploy.ts --network localhost
