@@ -15,8 +15,11 @@ contract KREToken is ERC20, Ownable {
     address public usdcAddress;
     mapping(uint256 => address) public postOwners;
     mapping(uint256 => uint256) public postPrices;
+    mapping(uint256 => address) public goodsOwners;
+    mapping(uint256 => uint256) public goodsPrices;
     mapping(uint256 => uint256) public revenueOf;
     uint256 public nextPostId;
+    uint256 public nextGoodsId;
 
     event CreationRegistered(uint256 indexed postId, address indexed creator, uint256 price);
     event TokensRewarded(address indexed recipient, uint256 amount);
@@ -27,7 +30,7 @@ contract KREToken is ERC20, Ownable {
         usdcAddress = mockUSDC;
     }
 
-    function registerCreation(uint256 price) external {
+    function registerPost(uint256 price) external {
         require(price > 0, "Price must be greater than 0");
 
         uint256 postId = nextPostId;
@@ -52,7 +55,7 @@ contract KREToken is ERC20, Ownable {
         emit TokensRewarded(msg.sender, 1 ether);
     }
 
-    function buy(uint256 postId) external {
+    function unlock(uint256 postId) external {
         // transferFrom(token, amount, from, to)
         // USDC approve가 먼저 되어있어야 한다 -> front에서 해야 함
         uint256 price = postPrices[postId];
@@ -80,7 +83,6 @@ contract KREToken is ERC20, Ownable {
         uint256 artistShare = (revenue * 30) / 100;
         uint256 donationShare = (revenue * 30) / 100;
         uint256 creatorShare = (revenue * 30) / 100;
-        uint256 platformShare = (revenue * 5) / 100;
         uint256 burned = (revenue * 5) / 100;
 
         _burn(owner(), burned);
@@ -106,6 +108,29 @@ contract KREToken is ERC20, Ownable {
         revenueOf[postId] = 0;
 
         emit RevenueDistributed(postId, postOwners[postId], revenue);
+    }
+
+    function registerGoods(uint256 price) external {
+        require(price > 0, "Price must be greater than 0");
+
+        uint256 goodsId = nextGoodsId;
+        nextGoodsId += 1;
+
+        // Store the post details
+        goodsOwners[goodsId] = msg.sender;
+        goodsPrices[goodsId] = price;
+    }
+
+    function buyGoods(uint256 goodsId) external {
+        uint256 price = goodsPrices[goodsId];
+        address goodsOwner = goodsOwners[goodsId];
+
+        SafeERC20.safeTransferFrom(
+            IERC20(this),
+            msg.sender,
+            goodsOwner,
+            price * 10 ** decimals()
+        );
     }
 
 }
