@@ -24,13 +24,13 @@ contract KREToken is ERC20, Ownable {
 
     event CreationRegistered(uint256 indexed postId, address indexed creator, uint256 price);
     event TokensRewarded(address indexed recipient, uint256 amount);
-    event RevenueDistributed(uint256 postId, address postOwners, uint256 revenue);
+    event RevenueDistributed(uint256 postId, address postOwner, uint256 revenue);
 
     constructor(address initialOwner, uint256 initialSupply, address mockUSDC) ERC20("Kreator Token", "KRE") Ownable(initialOwner) {
         _mint(msg.sender, initialSupply * 10**decimals());
         usdcAddress = mockUSDC;
         postOwners[0] = 0x705244aA51c66001A2fafd367ac63D1c3eAb578d;
-        postPrices[0] = 5;
+        postPrices[0] = 5 * 10 ** 6;
         nextPostId = 1;
     }
 
@@ -42,7 +42,7 @@ contract KREToken is ERC20, Ownable {
 
         // Store the post details
         postOwners[postId] = msg.sender;
-        postPrices[postId] = price;
+        postPrices[postId] = price * 10 ** 6;
 
         _mint(msg.sender, 2 ether); // Reward with 2 KRE tokens
 
@@ -60,6 +60,7 @@ contract KREToken is ERC20, Ownable {
     }
 
     function unlock(uint256 postId) external {
+        require(postOwners[postId] != address(0), "Invalid postId");
         // transferFrom(token, amount, from, to)
         // USDC approve가 먼저 되어있어야 한다 -> front에서 해야 함
         uint256 price = postPrices[postId];
@@ -69,8 +70,9 @@ contract KREToken is ERC20, Ownable {
             IERC20(usdcAddress),
             msg.sender,
             address(this),
-            2 ether
+            price
         );
+        
         _mint(productOwner, 2 ether);
 
         revenueOf[postId] += price;
@@ -94,19 +96,19 @@ contract KREToken is ERC20, Ownable {
         SafeERC20.safeTransfer(
             IERC20(usdcAddress),
             artistEOA,
-            artistShare * 10 ** decimals()
+            artistShare
         );
 
         SafeERC20.safeTransfer(
             IERC20(usdcAddress),
             donationEOA,
-            donationShare * 10 ** decimals()
+            donationShare
         );
 
         SafeERC20.safeTransfer(
             IERC20(usdcAddress),
             postOwners[postId],
-            creatorShare * 10 ** decimals()
+            creatorShare
         );
 
         revenueOf[postId] = 0;
@@ -122,7 +124,7 @@ contract KREToken is ERC20, Ownable {
 
         // Store the post details
         goodsOwners[goodsId] = msg.sender;
-        goodsPrices[goodsId] = price;
+        goodsPrices[goodsId] = price * 10 ** decimals();
     }
 
     function buyGoods(uint256 goodsId) external {
