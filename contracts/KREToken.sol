@@ -15,6 +15,7 @@ contract KREToken is ERC20, Ownable {
     address public usdcAddress;
     mapping(uint256 => address) public postOwners;
     mapping(uint256 => uint256) public postPrices;
+
     mapping(uint256 => address) public goodsOwners;
     mapping(uint256 => uint256) public goodsPrices;
     mapping(uint256 => uint256) public revenueOf;
@@ -28,6 +29,9 @@ contract KREToken is ERC20, Ownable {
     constructor(address initialOwner, uint256 initialSupply, address mockUSDC) ERC20("Kreator Token", "KRE") Ownable(initialOwner) {
         _mint(msg.sender, initialSupply * 10**decimals());
         usdcAddress = mockUSDC;
+        postOwners[0] = 0x705244aA51c66001A2fafd367ac63D1c3eAb578d;
+        postPrices[0] = 5;
+        nextPostId = 1;
     }
 
     function registerPost(uint256 price) external {
