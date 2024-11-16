@@ -1,16 +1,20 @@
 import { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-toolbox";
+import { configDotenv } from "dotenv";
+
+configDotenv();
 
 const pk = process.env.PK!;
 
 const config: HardhatUserConfig = {
   solidity: "0.8.27",
+  defaultNetwork: "sepolia",
   networks: {
-    goerli: {
-        url: "https://eth-goerli.alchemyapi.io/v2/YOUR_ALCHEMY_API_KEY",
-        accounts: [pk] // 배포 계정의 개인 키
+    sepolia: {
+      url: "https://sepolia.infura.io/v3/b7346d6e7f12453f820ba5f60b684014",
+      accounts: [pk]
     },
-  }
+  },
 };
 
 export default config;

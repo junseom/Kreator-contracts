@@ -6,7 +6,7 @@ async function deploy() {
 
     // Deploy Kreator contract
     const Kreator = await ethers.getContractFactory("Kreator");
-    const kreator = await Kreator.deploy();
+    const kreator = await Kreator.deploy(owner.address, "");
     await kreator.waitForDeployment();
     const kreatorAddress = await kreator.getAddress();
     console.log("Kreator deployed to:", kreatorAddress);
