@@ -4,20 +4,20 @@ async function deploy() {
     const signers = await ethers.getSigners();
     const owner = signers[0];
     const initialSupply = ethers.parseEther("1000000");
-
-    // Deploy Kreator contract
-    const KREToekn = await ethers.getContractFactory("KREToken");
-    const kretoken = await KREToekn.deploy(owner.address, initialSupply);
-    await kretoken.waitForDeployment();
-    const kretokenAddress = await kretoken.getAddress();
-    console.log("Kreator deployed to:", kretokenAddress);
-
-    // Deploy GoodsStore contract
+    
+    // Deploy MockUSDC contract
     const MockUSDC = await ethers.getContractFactory("MockUSDC");
     const mockUSDC = await MockUSDC.deploy(initialSupply);
     await mockUSDC.waitForDeployment();
     const mockUSDCAddress = await mockUSDC.getAddress();
-    console.log("GoodsStore deployed to:", mockUSDCAddress);
+    console.log("MockUSDC deployed to:", mockUSDCAddress);
+
+    // Deploy KREToekn contract
+    const KREToekn = await ethers.getContractFactory("KREToken");
+    const kretoken = await KREToekn.deploy(owner.address, initialSupply, mockUSDCAddress);
+    await kretoken.waitForDeployment();
+    const kretokenAddress = await kretoken.getAddress();
+    console.log("KREToekn deployed to:", kretokenAddress);
 }
 
 // Run the deployment script

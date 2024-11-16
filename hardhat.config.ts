@@ -8,7 +8,6 @@ const pk = process.env.PK!;
 
 const config: HardhatUserConfig = {
   solidity: "0.8.27",
-  defaultNetwork: "sepolia",
   networks: {
     hardhat: {
       accounts: [{
