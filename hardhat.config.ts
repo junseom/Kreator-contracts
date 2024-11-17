@@ -20,6 +20,11 @@ const config: HardhatUserConfig = {
       url: "https://sepolia.infura.io/v3/b7346d6e7f12453f820ba5f60b684014",
       accounts: [pk]
     },
+    chilizTestnet: {
+      url: "https://spicy-rpc.chiliz.com/",
+      accounts: [pk],
+      chainId: 88882,
+    },
   },
 };
 
